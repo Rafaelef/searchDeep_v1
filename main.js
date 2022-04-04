@@ -169,9 +169,64 @@ const data = [
 
 searchWith = () => {
     let filter = document.getElementById("filter").value;
-    
-    const output = data.filter(person => person.name.includes(filter)|person.age === parseInt(filter))
-    console.log(output);
+    let filtered = [];
+    let rows = [];
+    let output = document.getElementById("section");
+    let br = document.createElement("br");
+
+    output.textContent = "Wyniki zawierające podaną frazę: ";
+    output.appendChild(br);
+
+    if (filter.toString().length < 2){
+        output.appendChild(br);
+        output.innerHTML += "Too Short!"
+    }else{
+        data.forEach(obiekt => {
+        let vals = Object.values(obiekt);
+            
+        vals.forEach(val => {
+            
+
+            if(!Array.isArray(val)){
+                let text = val.toString().toLowerCase();
+                if (text.includes(filter.toString().toLowerCase())){
+                    if (filtered.includes(obiekt)){}
+                    else (filtered.push(obiekt))
+                }
+            }else {
+                val.forEach(element => {
+                    let text = element.toString().toLowerCase();
+                    if (!(typeof(element) === 'object') && element !== null) {
+                        if (text.includes(filter.toString().toLowerCase())){
+                            if (filtered.includes(obiekt)){}
+                            else (filtered.push(obiekt))
+                        }
+                    } else {
+                        let deepVals = Object.values(element);
+                        
+                        deepVals.forEach(element => {
+                            let text = element.toString().toLowerCase();
+                            if (text.includes(filter.toString().toLowerCase())){
+                                if (filtered.includes(obiekt)){}
+                                else (filtered.push(obiekt))
+                            }
+                        });
+                    }
+                });
+            }
+            
+        });
+    });
+        filtered.forEach(el => {
+            let user;
+            user = "Name: "+el.name+" Age: "+el.age;
+            rows.push(user);
+        });
+        rows.forEach(row => {
+            output.innerHTML += row;
+            output.appendChild(br);
+        });
+        console.log(filtered, filtered.length);
+
+    }   
 }
-
-
